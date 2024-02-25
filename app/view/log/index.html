@@ -1,0 +1,213 @@
+<!doctype html>
+<html class="dark">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <!-- 引入 layui.css -->
+    <link href="//cdn.staticfile.net/layui/2.9.4/css/layui.min.css" rel="stylesheet">
+    <link id="layui_theme_css" rel="stylesheet" href="/css/layui-theme-dark.css">
+    <title>日志监听</title>
+
+    <style>
+        body {
+            padding: 10px;
+        }
+
+        /* .layui-table-cell {
+            padding: 0;
+        } */
+
+        .hide {
+            display: none;
+        }
+
+        .log-type-1 {
+            color: #ff5722;
+        }
+
+        .log-type-2 {
+            color: #ffb800;
+        }
+
+        .log-type-3 {
+            color: #a233c6;
+        }
+
+        .log-type-4 {
+            color: #ff5722;
+        }
+
+        .log-type-5 {
+            color: #eeeeee;
+        }
+
+        .match {
+            color: #ff5722;
+        }
+    </style>
+</head>
+
+<body>
+    <form class="layui-form layui-row layui-col-space16">
+        <div class="layui-col-sm2">
+            <div class="layui-form-item">
+                <select id="project" name="project">
+                    <option value="">所有项目</option>
+                    {foreach $projects as $item }
+                    <option value="{$item}">{$item}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-col-sm2">
+            <div class="layui-form-item">
+                <select id="type" name="type">
+                    <option value="0">日志等级</option>
+                    {foreach $types as $type => $typeName }
+                    <option value="{$type}">{$typeName}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-col-sm2">
+            <div class="layui-input-wrap">
+                <input type="text" id="tag" name="tag" placeholder="标签" lay-affix="clear" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-col-sm2">
+            <div class="layui-input-wrap">
+                <input type="text" id="content" name="content" placeholder="日志内容" lay-affix="clear" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-btn-container layui-col-sm3">
+            <button type="button" class="search layui-btn">搜索</button>
+            <button type="button" class="listen layui-btn layui-btn-primary">监听</button>
+            <button type="button" class="stop-listen layui-btn layui-btn-primary hide">停止监听</button>
+        </div>
+    </form>
+
+    <table class="layui-hide" id="log-list"></table>
+
+    <script type="text/html" id="log-info">
+        <ul>
+            <li><strong>ID:</strong> {{= d.id }} </li>
+            <li><strong>项目:</strong> {{= d.project }} </li>
+            <li>
+                <strong>类型:</strong>
+                <span class="log-type-{{= d.type }}">{{= TYPES[d.type] }}</span>
+            </li>
+            <li><strong>时间:</strong> {{= d.time }} </li>
+        </ul>
+    </script>
+
+    <!-- 引入 layui.js -->
+    <script src="//cdn.staticfile.net/layui/2.9.4/layui.min.js"></script>
+    <script>
+        const TYPES = JSON.parse(`{:json_encode($types)}`);
+
+        layui.use(function () {
+            var table = layui.table;
+            var $ = layui.$;
+            var words = [];
+            var searchWord = '';
+
+            // 获取搜索条件
+            const getCondition = () => {
+                const conditon = {
+                    project: $('#project').val(),
+                    type: parseInt($('#type').val()),
+                    tag: $('#tag').val(),
+                    content: $('#content').val(),
+                }
+                searchWord = conditon.content;
+                return conditon;
+            }
+
+            // 点击搜索
+            $('.search').click(function () {
+                $.get('/api/log/search', getCondition(), res => {
+                    words = res.data.words;
+                    renderTable(res.data.list);
+                })
+            });
+
+            var logs = [];
+            var source;
+
+            // 点击监听
+            $('.listen').click(function () {
+                logs = [];
+                source = new EventSource('/api/log/listen?' + $.param(getCondition()));
+                source.addEventListener('message', function (event) {
+                    const response = JSON.parse(event.data);
+                    if(response.type == 'words') {
+                        words = response.data;
+                    } else if (response.type == 'logs') {
+                        logs = response.data.concat(logs);
+                        logs = logs.slice(0, 500);
+                        renderTable();
+                    }
+                }, false);
+
+                $(this).toggleClass('hide');
+                $('.stop-listen').toggleClass('hide');
+            });
+
+            // 点击停止监听
+            $('.stop-listen').click(function () {
+                source.close();
+                $(this).toggleClass('hide');
+                $('.listen').toggleClass('hide');
+            });
+
+            // 表格渲染列
+            const cols = [[
+                { field: 'id', title: '日志信息', width: 200, templet: '#log-info' },
+                { field: 'tags', title: '标签', width: 200, templet: d => JSON.parse(d.tags).join(' | ') },
+                { field: 'content', title: '日志内容', templet: d => renderContent(d) },
+            ]];
+
+            // 渲染内容
+            const renderContent = d => {
+                let data = '';
+                try {
+                    data = JSON.stringify(JSON.parse(d.content), null, 2);
+                } catch (error) {
+                    data = d.content;
+                }
+
+                if(data.includes(searchWord)) {
+                    return data.replace(searchWord, `<span class="match">${searchWord}</span>`);
+                }
+
+                if (words.length > 0) {
+                    for (const word of words) {
+                        data = data.replace(word, `<span class="match">${word}</span>`);
+                    }
+                }
+                return data;
+            }
+
+            // 渲染表格
+            const renderTable = data => {
+                const inst = table.render({
+                    elem: '#log-list',
+                    height: 'full-100',
+                    lineStyle: 'height: 150px;',
+                    page: false,
+                    cols: cols,
+                    data: data ? data : logs,
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
