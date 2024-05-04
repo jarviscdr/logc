@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\model;
 
 use support\Model;
@@ -7,14 +9,13 @@ use support\Model;
 /**
  * 日志项目列表
  */
-class BaseModel extends Model
-{
+class BaseModel extends Model {
     /**
      * The connection name for the model.
      *
      * @var string|null
      */
-    protected $connection = 'pgsql';
+    protected $connection = 'mysql';
 
     /**
      * The table associated with the model.
@@ -44,4 +45,13 @@ class BaseModel extends Model
      */
     protected $fillable = [];
 
+    // 将created_at在展示时格式化成Y-m-d H:i:s
+    public function getCreatedAtAttribute($value) {
+        return date('Y-m-d H:i:s', strtotime($value));
+    }
+
+    // 将updated_at在展示时格式化成Y-m-d H:i:s
+    public function getUpdatedAtAttribute($value) {
+        return date('Y-m-d H:i:s', strtotime($value));
+    }
 }

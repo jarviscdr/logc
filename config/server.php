@@ -13,7 +13,7 @@
  */
 
 return [
-    'listen' => 'http://0.0.0.0:8787',
+    'listen' => 'http://0.0.0.0:'.env('API_PORT', 10001),
     'transport' => 'tcp',
     'context' => [],
     'name' => 'logc',

@@ -19,7 +19,7 @@ return [
     // WS监听
     'websocket' => [
         'handler' => process\Websocket::class,
-        'listen'  => 'websocket://0.0.0.0:8788',
+        'listen'  => 'websocket://0.0.0.0:'.env('WS_PORT', 10002),
         'count'   => 1,
     ],
 

@@ -1,0 +1,50 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "declare_strict_types": true,
+        "binary_operator_spaces": {
+            "default": "align_single_space_minimal"
+        },
+        "curly_braces_position": {
+            "classes_opening_brace": "same_line",
+            "functions_opening_brace": "same_line"
+        },
+        "encoding": true,
+        "assign_null_coalescing_to_coalesce_equal": true,
+        "explicit_string_variable": true,
+        "void_return": true,
+        "phpdoc_align":{
+            "align": "vertical"
+        },
+        "align_multiline_comment": {
+            "comment_type": "all_multiline"
+        },
+        "phpdoc_order": {
+            "order": [
+                "param",
+                "return",
+                "throws"
+            ]
+        },
+        "phpdoc_add_missing_param_annotation":{
+            "only_untyped": true
+        },
+        "no_superfluous_phpdoc_tags": {
+            "allow_mixed": true,
+            "allow_unused_params": true
+        },
+        "phpdoc_separation": {
+            "groups": [
+                [
+                    "param",
+                    "throws",
+                    "return"
+                ],
+                [
+                    "author",
+                    "date"
+                ]
+            ]
+        }
+    }
+}

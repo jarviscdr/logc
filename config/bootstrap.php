@@ -16,5 +16,5 @@ return [
     support\bootstrap\Session::class,
     support\bootstrap\LaravelDb::class,
     // app\bootstrap\SqlDebug::class,
-    app\bootstrap\PostgreSQL::class,
+    // app\bootstrap\PostgreSQL::class,
 ];

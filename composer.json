@@ -38,7 +38,8 @@
     "illuminate/database": "^10.45",
     "illuminate/pagination": "^10.45",
     "symfony/var-dumper": "^7.0",
-    "fukuball/jieba-php": "dev-master"
+    "fukuball/jieba-php": "dev-master",
+    "vlucas/phpdotenv": "^5.5"
   },
   "suggest": {
     "ext-event": "For better performance. "
@@ -64,5 +65,8 @@
     "pre-package-uninstall": [
       "support\\Plugin::uninstall"
     ]
+  },
+  "require-dev": {
+    "laravel/pint": "^1.15"
   }
 }

@@ -76,7 +76,7 @@
 
         <div class="layui-col-sm2">
             <div class="layui-input-wrap">
-                <input type="text" id="tag" name="tag" placeholder="标签" lay-affix="clear" class="layui-input">
+                <input type="text" id="tags" name="tags" placeholder="标签" lay-affix="clear" class="layui-input">
             </div>
         </div>
 
@@ -90,6 +90,8 @@
             <button type="button" class="search layui-btn">搜索</button>
             <button type="button" class="listen layui-btn layui-btn-primary">监听</button>
             <button type="button" class="stop-listen layui-btn layui-btn-primary hide">停止监听</button>
+            <button type="button" class="auto-height layui-btn layui-btn-primary">自动高度</button>
+            <button type="button" class="fixed-height layui-btn layui-btn-primary hide">固定高度</button>
         </div>
     </form>
 
@@ -117,13 +119,16 @@
             var $ = layui.$;
             var words = [];
             var searchWord = '';
+            var logs = [];
+            var source;
+            var tableLineStyle = 'height: 150px;';
 
             // 获取搜索条件
             const getCondition = () => {
                 const conditon = {
                     project: $('#project').val(),
                     type: parseInt($('#type').val()),
-                    tag: $('#tag').val(),
+                    tags: $('#tag').val(),
                     content: $('#content').val(),
                 }
                 searchWord = conditon.content;
@@ -134,12 +139,10 @@
             $('.search').click(function () {
                 $.get('/api/log/search', getCondition(), res => {
                     words = res.data.words;
+                    logs = res.data.list;
                     renderTable(res.data.list);
                 })
             });
-
-            var logs = [];
-            var source;
 
             // 点击监听
             $('.listen').click(function () {
@@ -152,8 +155,8 @@
                     } else if (response.type == 'logs') {
                         logs = response.data.concat(logs);
                         logs = logs.slice(0, 500);
-                        renderTable();
                     }
+                    renderTable();
                 }, false);
 
                 $(this).toggleClass('hide');
@@ -167,10 +170,26 @@
                 $('.listen').toggleClass('hide');
             });
 
+            // 点击自动高度
+            $('.auto-height').click(function () {
+                tableLineStyle = 'height: auto;';
+                $(this).toggleClass('hide');
+                $('.fixed-height').toggleClass('hide');
+                renderTable();
+            });
+
+            // 点击固定高度
+            $('.fixed-height').click(function () {
+                tableLineStyle = 'height: 150px;';
+                $(this).toggleClass('hide');
+                $('.auto-height').toggleClass('hide');
+                renderTable();
+            });
+
             // 表格渲染列
             const cols = [[
                 { field: 'id', title: '日志信息', width: 200, templet: '#log-info' },
-                { field: 'tags', title: '标签', width: 200, templet: d => JSON.parse(d.tags).join(' | ') },
+                { field: 'tags', title: '标签', width: 200, templet: d => d.tags.join('<br>') },
                 { field: 'content', title: '日志内容', templet: d => renderContent(d) },
             ]];
 
@@ -178,21 +197,20 @@
             const renderContent = d => {
                 let data = '';
                 try {
-                    data = JSON.stringify(JSON.parse(d.content), null, 2);
+                    data = JSON.stringify(d.content, null, 2);
                 } catch (error) {
                     data = d.content;
                 }
 
                 if(data.includes(searchWord)) {
-                    return data.replace(searchWord, `<span class="match">${searchWord}</span>`);
-                }
-
-                if (words.length > 0) {
+                    data = data.replace(searchWord, `<span class="match">${searchWord}</span>`);
+                } else if (words.length > 0) {
                     for (const word of words) {
                         data = data.replace(word, `<span class="match">${word}</span>`);
                     }
                 }
-                return data;
+
+                return `<div style="white-space: pre-wrap;">${data}</div>`;
             }
 
             // 渲染表格
@@ -200,7 +218,7 @@
                 const inst = table.render({
                     elem: '#log-list',
                     height: 'full-100',
-                    lineStyle: 'height: 150px;',
+                    lineStyle: tableLineStyle,
                     page: false,
                     cols: cols,
                     data: data ? data : logs,
