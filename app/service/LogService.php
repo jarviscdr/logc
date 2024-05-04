@@ -6,11 +6,15 @@ namespace app\service;
 
 use app\model\Logs;
 use support\Db;
+use Webman\RedisQueue\Redis;
 
 class LogService extends BaseService {
+    protected static $logQueue = '';
+
     public function __construct(
         protected ProjectService $projectService
     ) {
+        self::$logQueue = config('app.log_queue');
     }
 
     public const LOG_TYPE_LIST = [ // 日志类型列表
@@ -20,6 +24,28 @@ class LogService extends BaseService {
         4 => 'DEBUG',
         5 => 'NOTICE',
     ];
+
+    /**
+     * 添加日志
+     *
+     * @param array $data
+     *
+     * @author Jarvis
+     * @date   2024-05-04 14:06
+     */
+    public function add($data): void {
+        switch (self::$logQueue) {
+            case 'redis':
+                Redis::send('logs', $data);
+                break;
+            case 'rabbitmq':
+                // TODO 待实现
+                break;
+            default:
+                $this->create($data);
+                break;
+        }
+    }
 
     /**
      * 创建日志

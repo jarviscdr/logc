@@ -36,9 +36,9 @@ class LogController extends BaseController {
      */
     public function record() {
         $data = $this->validate(LogValidate::class, 'create');
-        $id   = $this->logService->create($data);
+        $this->logService->add($data);
 
-        return success(['id' => $id]);
+        return success();
     }
 
     /**
