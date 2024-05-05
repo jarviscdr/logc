@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 return [
-    'enable' => true,
+    'enable' => env('LOG_QUEUQ', '') == 'rabbitmq' ? true : false,
 
     'host'       => env('RABBITMQ_HOST', 'rabbitmq'),
     'vhost'      => env('RABBITMQ_VHOST', '/'),
