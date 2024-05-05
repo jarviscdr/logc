@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace app\service;
 
 use app\model\Logs;
+use app\queue\rabbitmq\LogsBuilder;
 use support\Db;
 use Webman\RedisQueue\Redis;
+
+use function Workbunny\WebmanRabbitMQ\sync_publish;
 
 class LogService extends BaseService {
     protected static $logQueue = '';
@@ -39,7 +42,7 @@ class LogService extends BaseService {
                 Redis::send('logs', $data);
                 break;
             case 'rabbitmq':
-                // TODO 待实现
+                sync_publish(LogsBuilder::instance(), json_encode($data));
                 break;
             default:
                 $this->create($data);
