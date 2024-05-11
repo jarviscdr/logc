@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4de4e337165f3397f14492ebdc1946d1",
+    "content-hash": "0547d9863e8b04156afdc7484dfc036a",
     "packages": [
         {
             "name": "brick/math",
@@ -473,66 +473,6 @@
                 }
             ],
             "time": "2024-02-05T11:56:58+00:00"
-        },
-        {
-            "name": "fukuball/jieba-php",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fukuball/jieba-php.git",
-                "reference": "a485a16e5424b69526f18d4a7d90009692f2284c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/fukuball/jieba-php/zipball/a485a16e5424b69526f18d4a7d90009692f2284c",
-                "reference": "a485a16e5424b69526f18d4a7d90009692f2284c",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
-            },
-            "require": {
-                "php": ">= 5.3"
-            },
-            "require-dev": {
-                "php-coveralls/php-coveralls": "dev-master",
-                "phpunit/phpunit": "~9.0",
-                "squizlabs/php_codesniffer": "4.0.x-dev"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/vendor/multi-array/MultiArray.php",
-                    "src/vendor/multi-array/Factory/MultiArrayFactory.php"
-                ],
-                "psr-4": {
-                    "Fukuball\\Jieba\\": "src/class/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "fukuball",
-                    "email": "fukuball@gmail.com"
-                }
-            ],
-            "description": "結巴中文分詞（PHP 版本）：做最好的 PHP 中文分詞、中文斷詞組件",
-            "keywords": [
-                "Jieba",
-                "php"
-            ],
-            "support": {
-                "issues": "https://github.com/fukuball/jieba-php/issues",
-                "source": "https://github.com/fukuball/jieba-php/tree/master"
-            },
-            "time": "2022-08-15T06:50:32+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -4246,9 +4186,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "fukuball/jieba-php": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

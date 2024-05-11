@@ -77,12 +77,7 @@ class LogService extends BaseService {
         // 获取项目ID
         $data['project'] = $this->projectService->getIdByName($data['project']);
 
-        try {
-            $this->projectService->add($data['project']);
-        } catch (\Throwable $th) {
-            BE($th->getMessage());
-        }
-
+        // 保存日志信息
         $id = Logs::insertGetId($data);
         if (empty($id)) {
             BE('添加失败');

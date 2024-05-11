@@ -38,7 +38,6 @@
     "illuminate/database": "^10.45",
     "illuminate/pagination": "^10.45",
     "symfony/var-dumper": "^7.0",
-    "fukuball/jieba-php": "dev-master",
     "vlucas/phpdotenv": "^5.5",
     "webman/redis-queue": "^1.3",
     "jarviscdr/webman-rabbitmq": "^2.1"
