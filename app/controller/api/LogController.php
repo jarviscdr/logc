@@ -21,6 +21,13 @@ use Workerman\Timer;
  * @date   2024-02-18 22:37
  */
 class LogController extends BaseController {
+    /**
+     * 不需要登录的方法
+     *
+     * @var string[]
+     */
+    protected $noNeedLogin = ['record'];
+
     public function __construct(
         protected LogService $logService
     ) {

@@ -2,7 +2,7 @@
 <html class="dark">
 
 <head>
-    <base href="/">
+    <base href="{$config['base_url']}">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -123,11 +123,6 @@
             var logs = [];
             var source;
             var tableLineStyle = 'height: 150px;';
-
-            // 设置当前页面的 base 标签
-            $('base').prop('href', window.location.href.replace(/\/+$/, '') + '/');
-            // 设置主题CSS
-            $('#layui_theme_css').prop('href', 'css/layui-theme-dark.css');
 
             // 获取搜索条件
             const getCondition = () => {

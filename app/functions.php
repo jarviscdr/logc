@@ -20,16 +20,30 @@ function VE($data, $return = false): void {
  * @param array  $data
  * @param string $msg
  * @param int    $code
+ * @param mixed  $headers
+ * @param mixed  $cookies
  *
  * @author Jarvis
  * @date   2024-02-16 16:54
  */
-function success($data = [], $msg = 'success', $code = 0): Response {
-    return json([
+function success($data = [], $msg = 'success', $code = 0, $headers = [], $cookies = []): Response {
+    $response = json([
         'code' => $code,
         'msg'  => $msg,
         'data' => $data ?? new stdClass,
     ]);
+
+    if (! empty($headers)) {
+        $response->withHeaders($headers);
+    }
+
+    if (! empty($cookies)) {
+        foreach ($cookies as $key => $value) {
+            $response->cookie($key, $value, null, '/', '', false, true);
+        }
+    }
+
+    return $response;
 }
 
 /**
