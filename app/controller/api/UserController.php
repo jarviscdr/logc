@@ -23,6 +23,12 @@ class UserController extends BaseController {
     ) {
     }
 
+    /**
+     * 登录
+     *
+     * @author Jarvis
+     * @date   2024-06-01 22:31
+     */
     public function login(Request $request): Response {
         $data      = $this->validate(UserValidate::class, 'login');
         $tokenInfo = $this->userService->login($data['username'], $data['password']);
@@ -30,6 +36,19 @@ class UserController extends BaseController {
         return success($tokenInfo, '登录成功', 0, [], [
             'access_token'  => $tokenInfo['access_token'],
             'refresh_token' => $tokenInfo['refresh_token'],
+        ]);
+    }
+
+    /**
+     * 退出登录
+     *
+     * @author Jarvis
+     * @date   2024-06-01 22:31
+     */
+    public function logout(Request $request): Response {
+        return success([], '退出成功', 0, [], [
+            'access_token'  => '',
+            'refresh_token' => '',
         ]);
     }
 }

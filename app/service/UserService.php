@@ -11,7 +11,6 @@ use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\JwtFacade;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
-use Tinywan\Jwt\JwtToken;
 
 class UserService extends BaseService {
     public DateTimeZone $dateTimeZone;
@@ -205,6 +204,11 @@ class UserService extends BaseService {
             BE('用户名或密码错误');
         }
 
+        $user->setAttribute('login_at', date('Y-m-d H:i:s'));
+        if (! $user->save()) {
+            BE('登录失败');
+        }
+
         $claims = [
             'id'       => $user->id,
             'username' => $user->username,
@@ -220,13 +224,4 @@ class UserService extends BaseService {
             'refresh_expires_at' => $refreshToken->claims()->get('exp')->format('Y-m-d H:i:s'),
         ];
     }
-
-    // public function validateToken($token): array {
-    // JwtToken::verify()
-    // $payload = JwtToken::getPayload($token);
-    // if (empty($payload)) {
-    //     BE('token无效');
-    //     }
-    // $user = User::find($payload['id']);
-    // }
 }

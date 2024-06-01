@@ -70,7 +70,7 @@ class LogService extends BaseService {
         }
 
         // 将数组转换为字符串
-        $data['content_text'] = arrayToString($data['content']);
+        $data['content_text'] = arrayToString($data['content'], ' ', ' ');
         // 将内容转换为JSON字符串
         $data['content'] = json_encode($data['content'], JSON_UNESCAPED_UNICODE);
 

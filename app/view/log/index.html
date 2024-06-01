@@ -64,7 +64,7 @@
             </div>
         </div>
 
-        <div class="layui-col-sm2">
+        <div class="layui-col-sm1">
             <div class="layui-form-item">
                 <select id="type" name="type">
                     <option value="0">日志等级</option>
@@ -87,12 +87,13 @@
             </div>
         </div>
 
-        <div class="layui-btn-container layui-col-sm3">
+        <div class="layui-btn-container">
             <button type="button" class="search layui-btn">搜索</button>
-            <button type="button" class="listen layui-btn layui-btn-primary">监听</button>
+            <button type="button" class="listen layui-btn layui-btn-primary layui-border-blue">监听</button>
             <button type="button" class="stop-listen layui-btn layui-btn-primary hide">停止监听</button>
             <button type="button" class="auto-height layui-btn layui-btn-primary">自动高度</button>
             <button type="button" class="fixed-height layui-btn layui-btn-primary hide">固定高度</button>
+            <button type="button" class="logout layui-btn layui-btn-primary layui-border-red">退出登录</button>
         </div>
     </form>
 
@@ -136,17 +137,17 @@
                 return conditon;
             }
 
-            // 点击搜索
-            $('.search').click(function () {
+            // 搜索
+            function search() {
                 $.get('api/log/search', getCondition(), res => {
                     words = res.data.words;
                     logs = res.data.list;
                     renderTable(res.data.list);
                 })
-            });
+            }
 
-            // 点击监听
-            $('.listen').click(function () {
+            // 监听
+            function listen() {
                 logs = [];
                 source = new EventSource('api/log/listen?' + $.param(getCondition()));
                 source.addEventListener('message', function (event) {
@@ -162,7 +163,20 @@
 
                 $(this).toggleClass('hide');
                 $('.stop-listen').toggleClass('hide');
-            });
+            }
+
+            // 监听回车按键
+            $('#tags,#content').on('keydown', function(event) {
+                if (event.key === 'Enter' || event.keyCode === 13) {
+                    search();
+                }
+            })
+
+            // 点击搜索
+            $('.search').click(() => search());
+
+            // 点击监听
+            $('.listen').click(() => listen());
 
             // 点击停止监听
             $('.stop-listen').click(function () {
@@ -185,6 +199,17 @@
                 $(this).toggleClass('hide');
                 $('.auto-height').toggleClass('hide');
                 renderTable();
+            });
+
+            // 点击退出登录
+            $('.logout').click(() => {
+                layer.confirm('确认退出登录？', {
+                    btn: ['确定', '取消']
+                }, function(){
+                    $.post('api/user/logout', {}, res => {
+                        window.location.href = "{$config['base_url']}";
+                    });
+                });
             });
 
             // 表格渲染列
