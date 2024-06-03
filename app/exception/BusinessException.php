@@ -23,7 +23,9 @@ class BusinessException extends BaseBusinessException {
 
     public function render(Request $request): ?Response {
         if ($this->code == 401 && ! $request->expectsJson()) {
-            return redirect('/user/login');
+            $baseUrl = config('app.base_url');
+
+            return redirect($baseUrl.'/user/login');
         }
 
         return error($this->message, $this->code, $this->data);
