@@ -21,7 +21,7 @@ use support\Request;
 
 return [
     'app_name'              => env('APP_NAME', 'Logc'), // APP名称
-    'base_url'              => env('BASE_URL', 'http://127.0.0.1:10001'), // 基础 URL
+    'base_url'              => rtrim(env('BASE_URL', 'http://127.0.0.1:10001'), '/').'/', // 基础 URL
     'debug'                 => env('DEBUG', false), // 是否开启调试模式
     'error_reporting'       => E_ALL,
     'default_timezone'      => 'Asia/Shanghai',

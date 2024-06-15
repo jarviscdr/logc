@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  server:
+    # image: jarviscdr/php:82
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 9598-9599:9598-9599
+    networks:
+      - 1panel-network
+networks:
+  1panel-network:
+    external: true
