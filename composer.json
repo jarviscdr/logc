@@ -5,7 +5,7 @@
     "log",
     "redis"
   ],
-  "homepage": "https://www.workerman.net",
+  "homepage": "https://github.com/jarviscdr/logc",
   "license": "MIT",
   "description": "Log Center Project.",
   "authors": [
@@ -18,10 +18,10 @@
   ],
   "support": {
     "email": "walkor@workerman.net",
-    "issues": "https://github.com/walkor/webman/issues",
-    "forum": "https://wenda.workerman.net/",
-    "wiki": "https://workerman.net/doc/webman",
-    "source": "https://github.com/walkor/webman"
+    "issues": "https://github.com/jarviscdr/logc/issues",
+    "forum": "https://github.com/jarviscdr/logc",
+    "wiki": "https://github.com/jarviscdr/logc",
+    "source": "https://github.com/jarviscdr/logc"
   },
   "require": {
     "php": ">=7.2",

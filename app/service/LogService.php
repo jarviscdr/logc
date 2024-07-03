@@ -123,11 +123,13 @@ class LogService extends BaseService {
             ->when(! empty($where['type']), fn ($query) => $query->where('type', $where['type']))
             ->when(! empty($where['tags']), function ($query) use ($where): void {
                 $tags = explode(' ', trim($where['tags']));
-                $tags = array_filter($tags);
-                $tags = array_unique($tags);
                 array_map(fn ($tag) => trim($tag), $tags);
-                $tags = json_encode($tags, JSON_UNESCAPED_UNICODE);
-                $query->whereRaw("JSON_CONTAINS(tags, '{$tags}')");
+                $tags = array_unique(array_filter($tags));
+                $rawSql = [];
+                foreach ($tags as $tag) {
+                    $rawSql[] = "JSON_SEARCH(tags, 'one', '{$tag}')";
+                }
+                $query->whereRaw('(' . implode(' OR ', $rawSql). ')');
             })
             ->when(! empty($where['content']), fn ($query) => $query->whereRaw('MATCH(content_text) AGAINST(? IN BOOLEAN MODE)', [fulltextKeyword($where['content'])]))
             ->offset($offset)
